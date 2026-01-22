@@ -1,21 +1,28 @@
 # 14jan26 Software Lab. Alexander Burger
 
-      PilBox - Building Android Apps in PicoLisp
-      ==========================================
+      pilBoxVR - Building Horizon OS Apps in PicoLisp
+      ===============================================
 
 PilBox ("PicoLisp Box") is a generic Android App, which encapsulates normal
-PicoLisp (Web-) applications into installable APKs ("Android Packages").
+PicoLisp (Web-) applications into an installable APKs ("Android Packages") which
+can load zips containing PicoLisp code at run time allowing app development without
+an external device.
 
 It starts a Java Activity with a WebView GUI component (essentially an embedded
 browser), and a Java Service which in turn calls an Arm64 PicoLisp binary.
 PicoLisp interfaces with the Java runtime on the device, and can utilize
 virtually any Java functionality provided by the Android runtime system.
 
-The source tarball can be downloaded from
+The goal is to build a VR application around it, allowing easy scripting and
+creating new applications on the fly. PicoLisp is not made for number crunching,
+in fact it doesn't even have native support for floating point numbers. Thus using
+this for 3d graphics is not advised.
+
+The non-vr source tarball can be downloaded from
 
    https://software-lab.de/PilBox.tgz
 
-The installable APK of the generic PilBox is at
+The installable non-vr APK of the generic PilBox is at
 
    https://software-lab.de/pilBox.apk
 
