@@ -1,0 +1,80 @@
+# Clang 21.1.8
+# Linux
+# aarch64
+
+[errno]
+EINTR	4
+EAGAIN	11
+EACCES	13
+
+[stdio]
+BUFSIZ	1024
+
+[ulimit]
+RLIMIT_STACK	3
+RLIMIT_NOFILE	7
+RLIMIT_NPROC	6
+
+[unistd]
+PIPE_BUF	4096
+PATH_MAX	4096
+
+[terminal]
+TIOCGWINSZ	21523
+TIOCSWINSZ	21524
+winsize	8
+ws_row	0
+ws_col	2
+
+[mmap]
+PROT_READ	1
+PROT_WRITE	2
+MAP_SHARED	1
+MAP_FAILED	18446744073709551615
+
+[networking]
+SOCK_STREAM	1
+SOCK_DGRAM	2
+AF_INET6	10
+SOL_SOCKET	1
+SO_REUSEADDR	2
+IPPROTO_IPV6	41
+IPV6_V6ONLY	26
+INET6_ADDRSTRLEN	46
+sockaddr_in6	28
+sin6_family	0
+sin6_addr	8
+sin6_port	2
+NI_MAXHOST	1025
+NI_NAMEREQD	4
+addrinfo	48
+ai_family	4
+ai_socktype	8
+socklen_t	4
+ai_addrlen	16
+ai_addr	32
+ai_next	40
+AF_UNSPEC	0
+
+[domainSock]
+AF_UNIX	1
+iovec	16
+sockaddr_un	110
+sun_family	0
+sun_path	2
+cmsghdr	16
+cmsg_len	0
+cmsg_level	8
+cmsg_type	12
+cmsg_data	16
+CMSG_SPACE	16
+CMSG_SPACE_int	24
+SCM_RIGHTS	1
+msghdr	56
+msg_name	0
+msg_namelen	8
+msg_iov	16
+msg_iovlen	24
+msg_control	32
+msg_controllen	40
+msg_flags	48

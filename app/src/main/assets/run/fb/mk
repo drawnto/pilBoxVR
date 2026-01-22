@@ -1,0 +1,8 @@
+# 27sep25 Software Lab. Alexander Burger
+
+../pil ../src/lib/llvm.l src.l -bye > src.ll  &&
+opt -O2 -o src.bc  src.ll  &&
+llc -o src.s -relocation-model=pic  src.bc  &&
+cc -c -Wno-unknown-warning-option -O2 -fPIC  -o lib.o  lib.c  &&
+cc -o ../lib/fb.so lib.o -shared  src.s  &&
+strip ../lib/fb.so

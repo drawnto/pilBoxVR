@@ -1,0 +1,53 @@
+# 17jan26 Software Lab. Alexander Burger
+
+## openjdk-21-jdk-headless
+
+VERS=217
+NAME=26.1.17
+
+MINSDK=26
+TARGET=35
+TOOLS=../build-tools/36.1.0
+PLATFORM=../platforms/android-35
+
+$TOOLS/aapt package -f \
+   -m -J src \
+   -M AndroidManifest.xml \
+   -S res \
+   -I $PLATFORM/android.jar
+
+javac -d obj \
+   -classpath "$PLATFORM/android.jar:lib/core.jar" \
+   src/de/software_lab/pilbox/*.java
+
+$TOOLS/d8 --release \
+   --min-api $MINSDK \
+   $PLATFORM/android.jar \
+   lib/core.jar \
+   obj/de/software_lab/pilbox/*.class
+
+$TOOLS/aapt package -f \
+   -m -F unaligned.apk \
+   --version-code $VERS \
+   --version-name $NAME \
+   --min-sdk-version $MINSDK \
+   --target-sdk-version $TARGET \
+   -M AndroidManifest.xml \
+   -S res \
+   -I $PLATFORM/android.jar \
+   -A assets \
+   bin
+
+$TOOLS/aapt add unaligned.apk classes.dex
+
+$TOOLS/zipalign -f -z  4  unaligned.apk  pilBox.apk
+
+## $TOOLS/apksigner sign  --ks ../key.jks  --ks-key-alias appkey  pilBox.apk
+java --enable-native-access=ALL-UNNAMED \
+   -jar "$TOOLS/lib/apksigner.jar" sign \
+   --ks ../key.jks --ks-key-alias appkey pilBox.apk
+
+rm \
+   src/de/software_lab/pilbox/R.java \
+   obj/de/software_lab/pilbox/*.class \
+   classes*.dex pilBox.apk.idsig unaligned.apk

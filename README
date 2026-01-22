@@ -1,0 +1,178 @@
+# 14jan26 Software Lab. Alexander Burger
+
+      PilBox - Building Android Apps in PicoLisp
+      ==========================================
+
+PilBox ("PicoLisp Box") is a generic Android App, which encapsulates normal
+PicoLisp (Web-) applications into installable APKs ("Android Packages").
+
+It starts a Java Activity with a WebView GUI component (essentially an embedded
+browser), and a Java Service which in turn calls an Arm64 PicoLisp binary.
+PicoLisp interfaces with the Java runtime on the device, and can utilize
+virtually any Java functionality provided by the Android runtime system.
+
+The source tarball can be downloaded from
+
+   https://software-lab.de/PilBox.tgz
+
+The installable APK of the generic PilBox is at
+
+   https://software-lab.de/pilBox.apk
+
+
+The PilBox source package contains a directory tree with:
+
+   * Android Manifest
+   * A set of Java files for the App runtime
+   * Some resources in XML and PNG files
+   * PicoLisp binaries and Lisp sources
+   * Build/compile shell script
+
+
+   How to Build an App
+   -------------------
+
+There are three ways - with increasing difficulty - to build an App with PilBox:
+
+   1. Just pack a set of PicoLisp source files into a ZIP archive and send it to
+      ("share" it with) the generic PilBox App.
+
+   2. Replace the generic PilBox App (i.e. the file "App.l") with your own
+      application, also by sending a ZIP archive.
+
+   3. Modify the PilBox kernel on the Java level. This requires the Android
+      Command Line Tools (SDK Manager).
+
+
+   Using the Generic PilBox App
+   ----------------------------
+
+The Generic PilBox App is a single file "App.l", which is started by the PilBox
+Java kernel. It can load and manage PILs (PlugIn-Lisp Apps).
+
+Initially, it displays an empty screen with just two icons, a PicoLisp logo on
+the top-left which opens a PicoLisp REPL (a simple terminal window with a
+read-eval-print loop), and a settings icon on the top-right which opens a
+default settings page.
+
+It scans all directories and looks for files named "App.l" on the top level. The
+first expression (typically a string) is 'read' and used as a name, the rest
+should implement the desired functionality. In addition it scans for "loc/"
+(locale) directories, and files named "settings.l", "lib.css" and "logo.png". If
+such files are found, they are used automatically.
+
+All found Apps are displayed on the start page as buttons. If only a single
+"App.l" was found, this App is started immediately.
+
+Writing a new App for PilBox is very simple. For a minimal example, look at the
+Hello World App in the PilBox/pils/hello/ directory. It contains a single file
+"App.l":
+
+   "Hello World"
+
+   (menu "Hello World!"
+      (<h1> "center blue" "Hello World!") )
+
+To try it, download the PilBox APK from https://software-lab.de/pilBox.apk and
+install it on your Android device.
+
+Make a ZIP archive from the "hello/" directory
+
+   $ cd PilBox/
+   $ zip -r hello.zip hello/
+
+and either download it to your device and click on it, or store it in some
+public directory and pass it to the App. I use the "storage/" directory in
+Termux and call
+
+   $ termux-share ~/storage/downloads/hello.zip
+
+The PilBox App will start, unpack the ZIP, and (as it is the first and only App
+so far), display "Hello World!".
+
+For a more interesting experience, a calculator App is provided. After executing
+
+   $ zip -r calc.zip calc/
+
+and installing the resulting ZIP archive in the same way, PilBox will now
+display two Apps, "Hello World" and "Calculator". By clicking on the
+"Calculator" button, a nice bignum calculator will show up.
+
+The normal, direct way to install a PIL.zip file is to go into the settings on
+the PilBox top level, enter a name like "calc" into the text field in the "PILs"
+tab, and click "Download".
+
+
+   Example Apps (PILs)
+   -------------------
+
+   https://software-lab.de/hello.zip
+   https://software-lab.de/steps.zip
+   https://software-lab.de/barometer.zip
+   https://software-lab.de/radio.zip
+   https://software-lab.de/wecker.zip
+   https://software-lab.de/chess.zip
+   https://software-lab.de/browser.zip
+   https://software-lab.de/battery.zip
+   https://software-lab.de/scrawl.zip
+   https://software-lab.de/calc.zip
+   https://software-lab.de/demo.zip
+   https://software-lab.de/icecream.zip
+   https://software-lab.de/crash.zip
+
+"steps" is a step (activity) counter, "radio" is an internet radio with alarm
+clock, and "browser" a very lightweight internet browser.
+
+"barometer" works only on devices with an air pressure sensor.
+
+The "demo" PIL is a bit silly, just a collection of components, plus some access
+to the camera, QR-code scanner, notifications and GPS. You can install it the
+same way as the two other examples above.
+
+
+   Building the PilBox Kernel
+   --------------------------
+
+First make sure to have Java-21 installed
+
+   $ update-alternatives --config java
+
+Then create a directory "android_sdk" in some convenient place
+
+   $ mkdir android_sdk
+   $ cd android_sdk
+
+Download Android Command Line Tools for Linux. For this, go to
+
+   https://developer.android.com/studio
+
+and download
+
+   commandlinetools-linux-<xxx>_latest.zip
+
+for Linux from the "Command line tools onl" section, unpack it,
+
+   $ unzip commandlinetools-linux-<xxx>_latest.zip
+
+and use the SDK Manager to install the following packages:
+
+   $ cmdline-tools/bin/sdkmanager --sdk_root=. "tools"
+   $ cmdline-tools/bin/sdkmanager --sdk_root=. "platform-tools"
+   $ cmdline-tools/bin/sdkmanager --sdk_root=. "platforms;android-35"
+   $ cmdline-tools/bin/sdkmanager --sdk_root=. "build-tools;36.1.0"
+
+You will need to create your own keystore for signing the APK later
+
+   $ keytool -genkeypair -validity 365 -keystore key.jks -keyalg RSA -keysize 2048
+
+Fetch PilBox.tgz from software-lab.de and extract it
+
+   $ tar xfz PilBox.tgz
+
+Then change to this directory, and build the PilBox APK:
+
+   $ cd PilBox/
+   $ mkdir obj
+   $ ./mk.pilBox
+
+This results in an installable APK file "pilBox.apk".
